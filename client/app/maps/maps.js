@@ -94,13 +94,6 @@ map.directive('myMap', function(Geocoder) {
       //Creat map bounds property
       scope.map.bounds = new google.maps.LatLngBounds();
 
-      // Add click event listener, which call the $scope.click method
-      google.maps.event.addListener(scope.map, 'click', function (event) {
-        var lat = event.latLng.lat();
-        var lng = event.latLng.lng();
-        scope.clickMap(lat, lng);
-      }); //end addListener
-
     };
 
   };
