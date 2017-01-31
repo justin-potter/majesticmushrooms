@@ -32,17 +32,30 @@ pics.controller('picController', function ($scope, $http, Images) {
     Images.getImagesFlickr(searchBarText).then(
     function(imageArray) {
       //set images from helper fn to pictures scope var
+      $scope.picture.pictures = [];
+
+      imageArray.forEach(function(image, index) {
+        Images.getImageLocation(image.id)
+          .then(function(response) {
+            if ($scope.map.bounds.countains({lat: image.latitude, lng: image.longitude})) {
+              image.lat = response.latitude;
+              image.lng = response.longitude;
+              $scope.picture.pictures.push(image);
+            }
+          });
+      });
+
       $scope.picture.pictures = imageArray;
       $scope.$digest();
 
-      //Loop through pictures and add lat and lng
-      $scope.picture.pictures.forEach(function(picture, index) {
-        Images.getImageLocation(picture.id).then(response => {
-          $scope.picture.pictures[index].lat = response.latitude;
-          $scope.picture.pictures[index].lng = response.longitude;
-        });
+      // //Loop through pictures and add lat and lng
+      // $scope.picture.pictures.forEach(function(picture, index) {
+      //   Images.getImageLocation(picture.id).then(response => {
+      //     $scope.picture.pictures[index].lat = response.latitude;
+      //     $scope.picture.pictures[index].lng = response.longitude;
+      //   });
 
-      });
+      // });
     }).catch(function(err) {
       console.log('Error:', err);
     });
@@ -73,7 +86,7 @@ pics.controller('picController', function ($scope, $http, Images) {
           console.log('Error adding user info to db');
         });
       }
-    })
+    });
   };
 
 
